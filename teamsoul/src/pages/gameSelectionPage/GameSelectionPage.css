@@ -1,0 +1,22 @@
+.gamePageContainer {
+    display: flex;
+    padding: 40px 100px;
+    flex-direction: column !important;
+    background-color: white;
+    align-items: center;
+    height: calc(100vh - 60px);
+    box-sizing: border-box;
+}
+
+.gamesContainer {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 20px;
+    justify-content: flex-start;
+}
+
+.buttonsContainer {
+    display: flex;
+    flex-direction: row;
+}
