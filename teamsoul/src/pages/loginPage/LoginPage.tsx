@@ -16,12 +16,12 @@ import { loginUser } from "../../api";
 import { AuthContext } from "../../App";
 
 const LoginPage = () => {
-  const authContext = useContext(AuthContext); // Получаем контекст
+  const authContext = useContext(AuthContext); 
     if (!authContext) {
       throw new Error("AuthContext is not available");
     }
 
-    const { setAuthenticated } = authContext; // Получаем setAuthenticated из контекста
+    const { setAuthenticated } = authContext; 
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -59,14 +59,14 @@ const LoginPage = () => {
     try {
       const data = await loginUser(login, password);
       console.log("DATA", data);
-      localStorage.setItem("token", data.token); // Сохраняем JWT-токен
+      localStorage.setItem("token", data.token); 
 
-      setAuthenticated(true); // Обновляем контекст, чтобы показать, что пользователь авторизован
+      setAuthenticated(true); 
 
       toast.success("Вы успешно вошли!", {
         position: "top-center",
       });
-      navigate("/"); // Перенаправляем на главную страницу
+      navigate("/"); 
     } catch (error: any) {
       if (error.message === "Неверный логин или пароль") {
         toast.error("Неверный логин или пароль.", {
@@ -141,7 +141,7 @@ const LoginPage = () => {
           }}
         />
         <Button
-          onClick={() => handleSubmit(login, password, navigate)} // Передаем параметры явно
+          onClick={() => handleSubmit(login, password, navigate)} 
           disabled={isDisabled}
           variant="contained"
           color="primary"

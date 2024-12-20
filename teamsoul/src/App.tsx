@@ -12,20 +12,20 @@ import Header from "./modules/Header/Header";
 import MainPage from "./pages/mainPage/MainPage";
 import LoginPage from "./pages/loginPage/LoginPage";
 import GameSelectionPage from "./pages/gameSelectionPage/GameSelectionPage";
-import { validateToken } from "./api"; // Импорт функции проверки токена
-import { Toaster } from "react-hot-toast"; // Импорт Toaster
+import { validateToken } from "./api"; 
+import { Toaster } from "react-hot-toast"; 
 import "./App.css";
 
-// Типизация контекста пользователя
+
 interface AuthContextProps {
   isAuthenticated: boolean;
   setAuthenticated: (value: boolean) => void;
 }
 
-// Создаем контекст авторизации
+
 export const AuthContext = createContext<AuthContextProps | null>(null);
 
-// Хук для использования контекста
+
 const useAuth = () => {
   const context = useContext(AuthContext);
   console.log("CONTEXT", context)
@@ -35,7 +35,7 @@ const useAuth = () => {
   return context;
 };
 
-// Провайдер авторизации
+
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -60,14 +60,13 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-// HOC для защищенных маршрутов
+
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
 
-  // Если пользователь не авторизован, перенаправляем его на страницу логина
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
@@ -75,7 +74,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   return <>{children}</>;
 };
 
-// Приложение
+
 const App = () => {
   return (
     <AuthProvider>
@@ -83,10 +82,7 @@ const App = () => {
         <Header />
         <div style={{ paddingTop: "60px" }}>
           <Routes>
-            {/* Публичный маршрут для страницы логина */}
             <Route path="/login" element={<LoginPage />} />
-
-            {/* Все остальные маршруты защищены */}
             <Route
               path="/"
               element={
@@ -103,18 +99,14 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
-            {/* Добавьте другие защищенные маршруты аналогично */}
           </Routes>
         </div>
       </BrowserRouter>
-
-      {/* Компонент Toaster для уведомлений */}
       <Toaster position="top-center" />
     </AuthProvider>
   );
 };
 
-// Рендер приложения
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
   <React.StrictMode>
