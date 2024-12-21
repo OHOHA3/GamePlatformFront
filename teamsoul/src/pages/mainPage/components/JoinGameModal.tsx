@@ -1,49 +1,73 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
+  Modal,
   Box,
-  Button,
+  IconButton,
   Typography,
   TextField,
-  Modal,
-  IconButton,
-  styled,
+  Button,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-type ModalProps = {
+import toast from "react-hot-toast";
+import { validateToken } from "../../../api/auth/auth.request";
+import { joinRoom } from "../../../api/room/room.request";
+import {
+  modalStyles,
+  iconButtonStyles,
+  textFieldStyles,
+  cancelButtonStyles,
+  joinButtonStyles,
+} from "./styles"; // Импорт стилей
+
+interface ModalProps {
   isOpen: boolean;
   handleClose: () => void;
-};
+}
 
 const JoinGameModal: React.FC<ModalProps> = ({ isOpen, handleClose }) => {
+  const [roomCode, setRoomCode] = useState<string>("");
   const [isCodeEntered, setIsCodeEntered] = useState(false);
 
-  const handleChange = () => {
-    setIsCodeEntered(true);
-  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setRoomCode(value);
+    setIsCodeEntered(value.trim().length > 0);
+  };
+
+  const handleJoinRoom = async () => {
+    try {
+      const roomId = parseInt(roomCode);
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("Токен не найден. Пожалуйста, авторизуйтесь.");
+      }
+
+      const userDetails = await validateToken(token);
+      const userId = userDetails.id;
+
+      const result = await joinRoom({ roomId, userId });
+
+      if (result.success) {
+        toast.success("Вы успешно подключились к комнате!", {
+          position: "top-center",
+        });
+        handleClose();
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Не удалось подключиться к комнате.", {
+        position: "top-center",
+      });
+    }
+  };
+
   return (
     <Modal open={isOpen} onClose={handleClose}>
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 400,
-          bgcolor: "background.paper",
-          boxShadow: 24,
-          p: 4,
-          borderRadius: "12px",
-        }}
-      >
+      <Box sx={modalStyles}>
         <IconButton
           aria-label="close"
           onClick={handleClose}
-          sx={{
-            position: "absolute",
-            top: 8,
-            right: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
+          sx={iconButtonStyles}
         >
           <CloseIcon />
         </IconButton>
@@ -69,52 +93,24 @@ const JoinGameModal: React.FC<ModalProps> = ({ isOpen, handleClose }) => {
           fullWidth
           variant="outlined"
           label="Введите код"
+          value={roomCode}
           onChange={handleChange}
-          sx={{
-            mb: 3,
-            "& .MuiInputBase-input": {
-              textAlign: "center", 
-              fontSize: "18px", 
-            },
-            "& .MuiInputLabel-root": {
-              fontSize: "16px", 
-            },
-          }}
+          sx={textFieldStyles}
         />
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Button
             variant="outlined"
             onClick={handleClose}
-            sx={{
-              borderRadius: "30px",
-              margin: "0px",
-              fontWeight: 500,
-              color: "black",
-              border: "2px solid #4BEDFF",
-              textTransform: "none",
-              "&:hover": {
-                border: "2px solid #00BFFF",
-              },
-              width: "150px",
-            }}
+            sx={cancelButtonStyles}
           >
             Отмена
           </Button>
           <Button
             variant="contained"
             color="primary"
+            onClick={handleJoinRoom}
             disabled={!isCodeEntered}
-            sx={{
-              borderRadius: "30px",
-              margin: "0px",
-              background: "linear-gradient(120deg, #0059FF, #81ADFE)",
-              textTransform: "none",
-              width: "150px",
-              "&.Mui-disabled": {
-                background: "#C7C7C7", 
-                color: "white", 
-              },
-            }}
+            sx={joinButtonStyles}
           >
             Присоединиться
           </Button>
@@ -123,5 +119,5 @@ const JoinGameModal: React.FC<ModalProps> = ({ isOpen, handleClose }) => {
     </Modal>
   );
 };
- 
+
 export default JoinGameModal;

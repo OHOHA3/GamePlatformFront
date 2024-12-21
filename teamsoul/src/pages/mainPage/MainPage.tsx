@@ -1,32 +1,16 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  Typography,
-  TextField,
-  Modal,
-  IconButton,
-  styled,
-} from "@mui/material";
+import { Box, Button, Typography, Modal, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import "./MainPage.css";
 import MainImage from "../../pictures/mainPageImg.svg";
 import JoinGameModal from "./components/JoinGameModal";
 import { useNavigate } from "react-router-dom";
-
-const RightContainer = styled("div")(({ theme }) => ({
-  flex: 1,
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  padding: theme.spacing(4),
-}));
-
-const StyledButton = styled(Button)(({ theme }) => ({
-  margin: theme.spacing(1),
-  padding: theme.spacing(1.5, 4),
-  fontSize: "16px",
-}));
+import {
+  mainPageContainerStyles,
+  leftContainerStyles,
+  rightContainerStyles,
+  buttonsContainerStyles,
+  buttonStyles,
+} from "./MainPage.styles"; // Импортируем стили
 
 const HomePage: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -37,8 +21,8 @@ const HomePage: React.FC = () => {
   const handleClickCreateRoom = () => navigate("/select");
 
   return (
-    <div className="mainPageContainer">
-      <div className="leftContainer">
+    <div style={mainPageContainerStyles}>
+      <div style={leftContainerStyles}>
         <Typography
           variant="h3"
           component="h1"
@@ -54,43 +38,27 @@ const HomePage: React.FC = () => {
           команд. Забудьте про одноразовые мероприятия! Играйте, растите,
           побеждайте — вместе, где бы вы ни находились!
         </Typography>
-        <div className="buttonsContainer">
-          <StyledButton
+        <div style={buttonsContainerStyles}>
+          <Button
             variant="outlined"
             color="primary"
-            onClick={handleOpen} 
-            sx={{
-              borderRadius: "30px",
-              margin: "0px",
-              fontWeight: 500,
-              color: "black",
-              border: "2px solid #4BEDFF",
-              textTransform: "none",
-              "&:hover": {
-                border: "2px solid #00BFFF",
-              },
-            }}
+            onClick={handleOpen}
+            sx={buttonStyles.outlinedButton} // Применяем стили из объекта
           >
             Присоединиться к игре
-          </StyledButton>
-          <StyledButton
+          </Button>
+          <Button
             variant="contained"
             color="primary"
             onClick={handleClickCreateRoom}
-            sx={{
-              borderRadius: "30px",
-              margin: "0px",
-              background: "linear-gradient(120deg, #0059FF, #81ADFE)",
-              textTransform: "none",
-              width: "250px",
-            }}
+            sx={buttonStyles.containedButton} // Применяем стили из объекта
           >
             Создать комнату
-          </StyledButton>
+          </Button>
         </div>
       </div>
 
-      <div className="rightContainer">
+      <div style={rightContainerStyles}>
         <img
           src={MainImage}
           alt="Командная игра"

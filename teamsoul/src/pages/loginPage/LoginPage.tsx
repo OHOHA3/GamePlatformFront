@@ -11,17 +11,25 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import toast from "react-hot-toast";
 import loginPageImg from "../../pictures/loginPageImg.svg";
 import { useNavigate } from "react-router-dom";
-import "./LoginPage.css";
-import { loginUser } from "../../api";
+
+import {
+  loginPageContainerStyles,
+  leftLoginContainerStyles,
+  rightLoginContainerStyles,
+  loginImageStyles,
+  buttonStyles,
+  titleStyles,
+} from "./LoginPage.styles";
+
 import { AuthContext } from "../../App";
-
+import { loginUser } from "../../api/auth/auth.request";
 const LoginPage = () => {
-  const authContext = useContext(AuthContext); 
-    if (!authContext) {
-      throw new Error("AuthContext is not available");
-    }
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("AuthContext is not available");
+  }
 
-    const { setAuthenticated } = authContext; 
+  const { setAuthenticated } = authContext;
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -57,16 +65,22 @@ const LoginPage = () => {
     navigate: ReturnType<typeof useNavigate>
   ) => {
     try {
-      const data = await loginUser(login, password);
+      const data = await loginUser({ login, password });
       console.log("DATA", data);
-      localStorage.setItem("token", data.token); 
 
-      setAuthenticated(true); 
+      // Сохранение токена в localStorage
+      sessionStorage.setItem("token", data.accessToken);
+
+      // Установка флага авторизации в localStorage
+
+
+      // Обновление контекста авторизации
+      setAuthenticated(true);
 
       toast.success("Вы успешно вошли!", {
         position: "top-center",
       });
-      navigate("/"); 
+      navigate("/");
     } catch (error: any) {
       if (error.message === "Неверный логин или пароль") {
         toast.error("Неверный логин или пароль.", {
@@ -81,17 +95,12 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="loginPageContainer">
-      <div className="leftLoginContainer">
-        <img src={loginPageImg} alt="Teamwork" style={{ width: "90vh" }} />
+    <div style={loginPageContainerStyles}>
+      <div style={leftLoginContainerStyles}>
+        <img src={loginPageImg} alt="Teamwork" style={loginImageStyles} />
       </div>
-      <div className="rightLoginContainer">
-        <Typography
-          variant="h3"
-          component="h1"
-          mb="15px"
-          sx={{ fontWeight: "bold", textAlign: "left" }}
-        >
+      <div style={rightLoginContainerStyles}>
+        <Typography variant="h3" component="h1" mb="15px" sx={titleStyles}>
           Добро <br /> пожаловать!
         </Typography>
 
@@ -141,23 +150,12 @@ const LoginPage = () => {
           }}
         />
         <Button
-          onClick={() => handleSubmit(login, password, navigate)} 
+          onClick={() => handleSubmit(login, password, navigate)}
           disabled={isDisabled}
           variant="contained"
           color="primary"
           size="large"
-          sx={{
-            mt: 3,
-            width: "150px",
-            fontWeight: "500",
-            borderRadius: "50px",
-            background: "linear-gradient(120deg, #0059FF, #81ADFE)",
-            textTransform: "none",
-            "&.Mui-disabled": {
-              background: "#C7C7C7",
-              color: "white",
-            },
-          }}
+          sx={buttonStyles}
         >
           Войти
         </Button>
