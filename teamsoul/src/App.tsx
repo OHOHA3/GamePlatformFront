@@ -87,7 +87,7 @@ const App = () => {
               }
             />
             <Route
-              path="/select"
+              path="/select/:roomCode"
               element={
                 <ProtectedRoute>
                   <GameSelectionPage />

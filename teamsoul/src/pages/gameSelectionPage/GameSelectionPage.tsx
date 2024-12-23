@@ -1,28 +1,45 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  Paper,
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { Box, Typography, Paper } from "@mui/material";
 import { toast } from "react-hot-toast";
-import cardGameLogo from '../../pictures/gameLogo.png'
-import './GameSelectionPage.css'
+import cardGameLogo from "../../pictures/gameLogo.png";
+import "./GameSelectionPage.css";
 import GameDecsriptionDialog from "./components/GameDescriptionDialog";
+import { getGamesList } from "../../api/game/game.request"; // Предполагается, что путь корректен
+import { GameListResponse } from "../../api/game/game.types";
 
 const GameSelectionPage: React.FC = () => {
+  const { roomCode } = useParams<{ roomCode: string }>(); // Получение параметра roomCode
   const [open, setOpen] = useState(false);
+  const [game, setGame] = useState<GameListResponse[0] | null>(null); // Хранение первой игры
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    // Получение списка игр
+    const fetchGames = async () => {
+      try {
+        const games = await getGamesList();
+        if (games.length > 1) {
+          setGame(games[1]); // Устанавливаем первый элемент массива
+        } else {
+          toast.error("Список игр пуст.");
+        }
+      } catch (error: any) {
+        toast.error(error.message || "Ошибка загрузки списка игр.");
+      }
+    };
+
+    fetchGames();
+
     toast.success("Комната успешно создана. Приятной игры!");
   }, []);
 
   return (
     <div className="gamePageContainer">
       <Typography variant="h4" color="#003FB4" gutterBottom fontWeight={600}>
-        Ваша комната: 12345
+        Ваша комната: {roomCode}
       </Typography>
 
       <div className="gamesContainer">
@@ -35,41 +52,45 @@ const GameSelectionPage: React.FC = () => {
             height: 250,
             cursor: "pointer",
             border: "2px solid #4BEDFF",
-            borderRadius: "16px", 
-            position: "relative", 
+            borderRadius: "16px",
+            position: "relative",
           }}
         >
           <Box
             component="img"
-            src={cardGameLogo} 
+            src={cardGameLogo}
             alt="Изображение"
             sx={{
-              position: "absolute", 
-              bottom: 0, 
-              right: 0, 
+              position: "absolute",
+              bottom: 0,
+              right: 0,
               transform: "translate(50%, 50%)",
-              width: "250px", 
-              height: "170px", 
+              width: "250px",
+              height: "170px",
             }}
           />
-
           <Typography
             variant="h5"
             fontWeight="550"
             gutterBottom
             marginBottom="15px"
           >
-            Карточная игра
+            {game ? game.name : "Загрузка..."}
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            Карточная игра представляет из себя обмен карточками с вопросами.
-            Игроку показывается карточка с вопросом....
+            {game ? game.description : "Загрузка описания игры..."}
           </Typography>
         </Paper>
 
-        <GameDecsriptionDialog isOpen={open} handleClose={handleClose} />
+        <GameDecsriptionDialog
+          isOpen={open}
+          handleClose={handleClose}
+          gameId={game ? game.id : 0}
+          roomCode={2}
+        />
       </div>
     </div>
   );
 };
+
 export default GameSelectionPage;

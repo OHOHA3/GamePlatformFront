@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from "axios";
 
 export const createRequest = (): AxiosInstance => {
   return axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
+    baseURL: "http://194.226.49.153:8888",
     headers: {
       "Content-Type": "application/json",
     },

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -12,13 +12,15 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import toast from "react-hot-toast";
 import { styled } from "@mui/material";
+import { createGame } from "../../../api/room/room.request";
+import { useNavigate } from "react-router-dom";
 
 const StyledDialogButton = styled(Button)(({ theme }) => ({
   borderRadius: "30px",
   margin: "0px",
   fontWeight: 500,
   textTransform: "none",
-  width: '180px',
+  width: "180px",
   "&.MuiButton-outlined": {
     color: "black",
     border: "2px solid #4BEDFF",
@@ -35,12 +37,39 @@ const StyledDialogButton = styled(Button)(({ theme }) => ({
 type DialogProps = {
   isOpen: boolean;
   handleClose: () => void;
+  gameId: number;
+  roomCode: number;
 };
 
 const GameDescriptionDialog: React.FC<DialogProps> = ({
   isOpen,
   handleClose,
+  gameId,
+  roomCode,
 }) => {
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  const handleStartGame = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("Необходима авторизация для создания игры.");
+        return;
+      }
+      const { gameUrl } = await createGame(
+        token,
+        gameId,
+        roomCode
+      );
+      toast.success("Игра началась! URL игры: " + gameUrl);
+      //navigate(gameUrl);
+      // Можно сделать перенаправление или другую логику с gameUrl
+    } catch (error: any) {
+      toast.error(error.message || "Ошибка при создании игры");
+    }
+  };
+
   return (
     <Dialog
       open={isOpen}
@@ -50,9 +79,9 @@ const GameDescriptionDialog: React.FC<DialogProps> = ({
       sx={{
         "& .MuiDialog-paper": {
           padding: "20px",
-          borderRadius: "16px", 
-          overflow: "hidden", 
-          position: "relative", 
+          borderRadius: "16px",
+          overflow: "hidden",
+          position: "relative",
         },
       }}
     >
@@ -72,7 +101,7 @@ const GameDescriptionDialog: React.FC<DialogProps> = ({
         align="center"
         fontWeight={550}
         sx={{
-          textAlign: "center", 
+          textAlign: "center",
         }}
       >
         Карточная игра
@@ -82,7 +111,7 @@ const GameDescriptionDialog: React.FC<DialogProps> = ({
         sx={{
           maxHeight: "300px",
           overflowY: "auto",
-          padding: "20px 15px", 
+          padding: "20px 15px",
         }}
       >
         <Typography variant="body1" padding={0}>
@@ -99,10 +128,7 @@ const GameDescriptionDialog: React.FC<DialogProps> = ({
         <StyledDialogButton variant="outlined" onClick={handleClose}>
           Отмена
         </StyledDialogButton>
-        <StyledDialogButton
-          variant="contained"
-          onClick={() => toast("Игра началась!")}
-        >
+        <StyledDialogButton variant="contained" onClick={handleStartGame}>
           Начать игру
         </StyledDialogButton>
       </DialogActions>

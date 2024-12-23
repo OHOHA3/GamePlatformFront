@@ -22,7 +22,7 @@ export const loginUser = async (
     login === DEVELOPER_CREDENTIALS.login &&
     password === DEVELOPER_CREDENTIALS.password
   ) {
-    return { accessToken: "developer-jwt-token" };
+    return { access_token: "developer-jwt-token" };
   }
 
   try {
@@ -30,7 +30,7 @@ export const loginUser = async (
       "/auth-service/api/v1/login",
       {
         identifier: login,
-        password,
+        password: password,
       }
     );
     return response.data;

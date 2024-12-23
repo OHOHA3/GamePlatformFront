@@ -1,7 +1,7 @@
 
 
 export type LoginResponse = {
-  accessToken: string;
+  access_token: string;
 };
 
 export type  UserDetailsResponse = {

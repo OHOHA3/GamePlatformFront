@@ -18,6 +18,7 @@ import {
   cancelButtonStyles,
   joinButtonStyles,
 } from "./styles"; // Импорт стилей
+import { useNavigate } from "react-router-dom";
 
 interface ModalProps {
   isOpen: boolean;
@@ -27,7 +28,7 @@ interface ModalProps {
 const JoinGameModal: React.FC<ModalProps> = ({ isOpen, handleClose }) => {
   const [roomCode, setRoomCode] = useState<string>("");
   const [isCodeEntered, setIsCodeEntered] = useState(false);
-
+  const navigate = useNavigate();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setRoomCode(value);
@@ -36,24 +37,21 @@ const JoinGameModal: React.FC<ModalProps> = ({ isOpen, handleClose }) => {
 
   const handleJoinRoom = async () => {
     try {
-      const roomId = parseInt(roomCode);
       const token = localStorage.getItem("token");
-
       if (!token) {
         throw new Error("Токен не найден. Пожалуйста, авторизуйтесь.");
       }
 
-      const userDetails = await validateToken(token);
-      const userId = userDetails.id;
+      await joinRoom({
+        roomId: roomCode,
+        authorizationToken: token,
+      });
 
-      const result = await joinRoom({ roomId, userId });
-
-      if (result.success) {
-        toast.success("Вы успешно подключились к комнате!", {
-          position: "top-center",
-        });
-        handleClose();
-      }
+      toast.success("Вы успешно подключились к комнате!", {
+        position: "top-center",
+      });
+      handleClose();
+      navigate(`/select/${roomCode}`); // Переход с передачей кода комнаты
     } catch (error: any) {
       toast.error(error.message || "Не удалось подключиться к комнате.", {
         position: "top-center",

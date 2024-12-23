@@ -69,8 +69,8 @@ const LoginPage = () => {
       console.log("DATA", data);
 
       // Сохранение токена в localStorage
-      sessionStorage.setItem("token", data.accessToken);
-
+      localStorage.setItem("token", data.access_token);
+      console.log("TOKEN", data.access_token);
       // Установка флага авторизации в localStorage
 
 
