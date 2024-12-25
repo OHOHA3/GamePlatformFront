@@ -1,26 +1,24 @@
 import React, { useContext, useState } from "react";
 import { Box, Button, Typography, Snackbar } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../App"; // Импортируем контекст
-import { createGame, createRoom } from "../../api/room/room.request"; // Предположим, что функция находится здесь
+import { createGame, createRoom } from "../../api/room/room.request"; 
 import {
   mainPageContainerStyles,
   leftContainerStyles,
   rightContainerStyles,
   buttonsContainerStyles,
   buttonStyles,
-} from "./MainPage.styles"; // Импортируем стили
+} from "./MainPage.styles"; 
 import MainImage from "../../pictures/mainPageImg.svg";
-import JoinGameModal from "./components/JoinGameModal"; // Убедитесь, что путь корректен
+import JoinGameModal from "./components/JoinGameModal"; 
 
 const MainPage: React.FC = () => {
-  const [open, setOpen] = useState(false); // Для открытия модального окна
-  const [error, setError] = useState<string | null>(null); // Состояние для ошибок
-  const [success, setSuccess] = useState<boolean>(false); // Состояние для успешного создания игры
-  // Извлекаем токен из контекста
+  const [open, setOpen] = useState(false); 
+  const [error, setError] = useState<string | null>(null); 
+  const [success, setSuccess] = useState<boolean>(false); 
 
-  const handleOpen = () => setOpen(true); // Открыть модальное окно
-  const handleClose = () => setOpen(false); // Закрыть модальное окно
+  const handleOpen = () => setOpen(true); 
+  const handleClose = () => setOpen(false); 
   const navigate = useNavigate();
 
 
@@ -34,7 +32,8 @@ const handleClickCreateRoom = async () => {
 
     const response = await createRoom();
     if (response.roomId) {
-      navigate(`/select/${response.roomId}`); // Переход на страницу игры
+      console.log(response.roomId);
+      navigate(`/select/${response.roomId}`); 
     } else {
       setError("Ошибка при создании игры");
     }
@@ -65,7 +64,7 @@ const handleClickCreateRoom = async () => {
           <Button
             variant="outlined"
             color="primary"
-            onClick={handleOpen} // Открытие модального окна
+            onClick={handleOpen} 
             sx={buttonStyles.outlinedButton}
           >
             Присоединиться к игре
@@ -89,10 +88,8 @@ const handleClickCreateRoom = async () => {
         />
       </div>
 
-      {/* Модальное окно для присоединения к игре */}
       <JoinGameModal isOpen={open} handleClose={handleClose} />
 
-      {/* Snackbar для уведомлений */}
       <Snackbar
         open={!!error}
         message={error}

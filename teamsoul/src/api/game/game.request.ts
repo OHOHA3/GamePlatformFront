@@ -33,7 +33,7 @@ export const createGameInstance = async (
         },
       }
     );
-    return response.data; // Возвращает containerId
+    return response.data; 
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 400) {
       throw new Error(error.response.data || "Ошибка в запросе клиента");

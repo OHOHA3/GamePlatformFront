@@ -50,7 +50,7 @@ export const loginUser = async (
  */
 export const validateToken = async (
   token: string
-): Promise<UserDetailsResponse> => {
+): Promise<boolean> => {
   try {
     const response = await createRequest().get<UserDetailsResponse>(
       "/auth-service/api/v1/validate",
@@ -60,7 +60,7 @@ export const validateToken = async (
         },
       }
     );
-    return response.data;
+    return response.data ? true : false;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error("Токен недействителен или истёк");

@@ -21,15 +21,10 @@ import {
   titleStyles,
 } from "./LoginPage.styles";
 
-import { AuthContext } from "../../App";
+
 import { loginUser } from "../../api/auth/auth.request";
 const LoginPage = () => {
-  const authContext = useContext(AuthContext);
-  if (!authContext) {
-    throw new Error("AuthContext is not available");
-  }
 
-  const { setAuthenticated } = authContext;
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -68,15 +63,8 @@ const LoginPage = () => {
       const data = await loginUser({ login, password });
       console.log("DATA", data);
 
-      // Сохранение токена в localStorage
       localStorage.setItem("token", data.access_token);
       console.log("TOKEN", data.access_token);
-      // Установка флага авторизации в localStorage
-
-
-      // Обновление контекста авторизации
-      setAuthenticated(true);
-
       toast.success("Вы успешно вошли!", {
         position: "top-center",
       });

@@ -63,8 +63,6 @@ const GameDescriptionDialog: React.FC<DialogProps> = ({
         roomCode
       );
       toast.success("Игра началась! URL игры: " + gameUrl);
-      //navigate(gameUrl);
-      // Можно сделать перенаправление или другую логику с gameUrl
     } catch (error: any) {
       toast.error(error.message || "Ошибка при создании игры");
     }

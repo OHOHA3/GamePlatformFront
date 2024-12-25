@@ -5,24 +5,23 @@ import { toast } from "react-hot-toast";
 import cardGameLogo from "../../pictures/gameLogo.png";
 import "./GameSelectionPage.css";
 import GameDecsriptionDialog from "./components/GameDescriptionDialog";
-import { getGamesList } from "../../api/game/game.request"; // Предполагается, что путь корректен
+import { getGamesList } from "../../api/game/game.request"; 
 import { GameListResponse } from "../../api/game/game.types";
 
 const GameSelectionPage: React.FC = () => {
-  const { roomCode } = useParams<{ roomCode: string }>(); // Получение параметра roomCode
+  const { roomId } = useParams<{ roomId: string }>();
   const [open, setOpen] = useState(false);
-  const [game, setGame] = useState<GameListResponse[0] | null>(null); // Хранение первой игры
+  const [game, setGame] = useState<GameListResponse[0] | null>(null); 
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
-    // Получение списка игр
     const fetchGames = async () => {
       try {
         const games = await getGamesList();
         if (games.length > 1) {
-          setGame(games[1]); // Устанавливаем первый элемент массива
+          setGame(games[1]); 
         } else {
           toast.error("Список игр пуст.");
         }
@@ -39,7 +38,7 @@ const GameSelectionPage: React.FC = () => {
   return (
     <div className="gamePageContainer">
       <Typography variant="h4" color="#003FB4" gutterBottom fontWeight={600}>
-        Ваша комната: {roomCode}
+        Ваша комната: {roomId}
       </Typography>
 
       <div className="gamesContainer">
@@ -86,7 +85,7 @@ const GameSelectionPage: React.FC = () => {
           isOpen={open}
           handleClose={handleClose}
           gameId={game ? game.id : 0}
-          roomCode={2}
+          roomCode={roomId ? parseInt(roomId, 10) : 0}
         />
       </div>
     </div>

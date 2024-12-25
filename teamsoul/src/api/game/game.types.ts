@@ -6,7 +6,7 @@ export type GameListResponse = {
 }[];
 
 export type CreateGameRequest = {
-  id: number;  // id игры
+  id: number;  
   roomId: number;
-  settings?: Record<string, any>; // Если настройки не обязательны и могут быть различными
+  settings?: Record<string, any>; 
 };

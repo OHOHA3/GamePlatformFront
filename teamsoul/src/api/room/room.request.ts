@@ -16,7 +16,7 @@ export const createGame = async (
   try {
     const response = await createRequest().post<{ gameUrl: string }>(
       "/game-room-service/api/v1/game/create",
-      { id, roomId }, // Отправляем id и roomId в теле запроса
+      { id, roomId }, 
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -59,7 +59,9 @@ export const createRoom = async (
 
 
 
-
+interface JoinRoomResponse {
+  url: string;
+}
 
 export const joinRoom = async ({
   roomId,
@@ -67,9 +69,9 @@ export const joinRoom = async ({
 }: {
   roomId: string;
   authorizationToken: string;
-}): Promise<{ gameUrl: string }> => {
+}): Promise<JoinRoomResponse> => {
   try {
-    const response = await createRequest().post<{ gameUrl: string }>(
+    const response = await createRequest().post<JoinRoomResponse>(
       "/game-room-service/api/v1/user/connect",
       { roomId },
       {
@@ -79,7 +81,6 @@ export const joinRoom = async ({
       }
     );
     return response.data;
-    // Ничего не возвращаем в случае успеха
   } catch (error) {
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 400) {
