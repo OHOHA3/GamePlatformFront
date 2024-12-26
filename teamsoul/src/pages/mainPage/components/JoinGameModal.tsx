@@ -88,7 +88,7 @@ const JoinGameModal: React.FC<ModalProps> = ({ isOpen, handleClose }) => {
           padding="0 20px"
           align="center"
         >
-          Для присоединения к комнате Вам нужно ввести её код.
+          Для присоединения к игре Вам нужно <br /> ввести её код
         </Typography>
         <TextField
           fullWidth

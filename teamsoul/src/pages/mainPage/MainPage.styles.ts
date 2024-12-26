@@ -15,6 +15,8 @@ export const leftContainerStyles = {
   flexDirection: "column" as const,
   gap: "10px",
   width: "85vh",
+  boxSizing: "border-box" as const,
+  flex: 1,
 };
 
 export const rightContainerStyles = {

@@ -39,6 +39,8 @@ type DialogProps = {
   handleClose: () => void;
   gameId: number;
   roomCode: number;
+  gameName: string;
+  gameDescription: string;
 };
 
 const GameDescriptionDialog: React.FC<DialogProps> = ({
@@ -46,6 +48,8 @@ const GameDescriptionDialog: React.FC<DialogProps> = ({
   handleClose,
   gameId,
   roomCode,
+  gameName,
+  gameDescription,
 }) => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -57,12 +61,9 @@ const GameDescriptionDialog: React.FC<DialogProps> = ({
         setError("Необходима авторизация для создания игры.");
         return;
       }
-      const { gameUrl } = await createGame(
-        token,
-        gameId,
-        roomCode
-      );
-      toast.success("Игра началась! URL игры: " + gameUrl);
+      const response = await createGame(token, gameId, roomCode);
+      toast.success("Игра началась! URL игры: " + response.url);
+      window.location.href = response.url;
     } catch (error: any) {
       toast.error(error.message || "Ошибка при создании игры");
     }
@@ -102,7 +103,7 @@ const GameDescriptionDialog: React.FC<DialogProps> = ({
           textAlign: "center",
         }}
       >
-        Карточная игра
+        {gameName}
       </DialogTitle>
 
       <DialogContent
@@ -113,12 +114,7 @@ const GameDescriptionDialog: React.FC<DialogProps> = ({
         }}
       >
         <Typography variant="body1" padding={0}>
-          Карточная игра представляет из себя обмен карточками с вопросами.
-          Игроку показывается карточка с вопросом, на который он должен
-          ответить. После того, как игрок ответил, он выбирает следующего
-          игрока, который будет отвечать на уже другой вопрос. Таким образом
-          карточками можно обмениваться неограниченное количество раз. Игра
-          завершается, когда игроки покидают комнату.
+          {gameDescription}
         </Typography>
       </DialogContent>
 

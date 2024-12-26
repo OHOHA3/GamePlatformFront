@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Typography, Paper } from "@mui/material";
 import { toast } from "react-hot-toast";
@@ -15,13 +15,13 @@ const GameSelectionPage: React.FC = () => {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
+const isToastShown = useRef(false); 
   useEffect(() => {
     const fetchGames = async () => {
       try {
         const games = await getGamesList();
         if (games.length > 1) {
-          setGame(games[1]); 
+          setGame(games[1]);
         } else {
           toast.error("Список игр пуст.");
         }
@@ -32,8 +32,13 @@ const GameSelectionPage: React.FC = () => {
 
     fetchGames();
 
-    toast.success("Комната успешно создана. Приятной игры!");
+    if (!isToastShown.current) {
+      toast.success("Комната успешно создана. Приятной игры!");
+      isToastShown.current = true; // Устанавливаем флаг
+    }
   }, []);
+
+
 
   return (
     <div className="gamePageContainer">
@@ -86,6 +91,8 @@ const GameSelectionPage: React.FC = () => {
           handleClose={handleClose}
           gameId={game ? game.id : 0}
           roomCode={roomId ? parseInt(roomId, 10) : 0}
+          gameName={game ? game.name : "Игра не выбрана"}
+          gameDescription={game ? game.description : "Описание отсутствует"}
         />
       </div>
     </div>

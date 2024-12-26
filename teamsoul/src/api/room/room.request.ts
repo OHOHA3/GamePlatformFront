@@ -2,6 +2,9 @@ import axios from "axios";
 import { UserConnectRoomRequest } from "./room.types";
 import { createRequest } from "../createRequest";
 
+interface JoinRoomResponse {
+  url: string;
+}
 /**
  * Функция для подключения пользователя к комнате.
  * @param {UserConnectRoomRequest} userConnect - Объект с параметрами комнаты и пользователя.
@@ -12,11 +15,11 @@ export const createGame = async (
   token: string,
   id: number,
   roomId: number
-): Promise<{ gameUrl: string }> => {
+): Promise<JoinRoomResponse> => {
   try {
-    const response = await createRequest().post<{ gameUrl: string }>(
+    const response = await createRequest().post<JoinRoomResponse>(
       "/game-room-service/api/v1/game/create",
-      { id, roomId }, 
+      { id, roomId },
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -59,9 +62,7 @@ export const createRoom = async (
 
 
 
-interface JoinRoomResponse {
-  url: string;
-}
+
 
 export const joinRoom = async ({
   roomId,
